@@ -1,5 +1,6 @@
 package com.capitole.product.pricing.infrastructure.adapter.repository;
 
+import com.capitole.product.pricing.domain.exception.ProductPricingException;
 import com.capitole.product.pricing.infrastructure.adapter.entity.PriceEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,6 +28,10 @@ public class MongoPriceRepositoryTest {
     @Mock private ReactiveMongoTemplate mongoTemplate;
     @InjectMocks private MongoPriceRepository mongoPriceRepository;
 
+    private final LocalDateTime date = LocalDateTime.of(2020, 6, 14, 10, 0);
+    private final Long productId = 35455L;
+    private final Long brandId = 1L;
+
     @BeforeEach
     void setUp() {
         mongoTemplate = mock(ReactiveMongoTemplate.class);
@@ -35,9 +40,6 @@ public class MongoPriceRepositoryTest {
 
     @Test
     public void testFindApplicablePrice_Success(){
-        LocalDateTime date = LocalDateTime.of(2020, 6, 14, 10, 0);
-        Long productId = 35455L;
-        Long brandId = 1L;
         PriceEntity priceEntity = new PriceEntity();
         priceEntity.setProductId(productId);
         priceEntity.setBrandId(brandId);
@@ -69,5 +71,30 @@ public class MongoPriceRepositoryTest {
                             assertEquals(2L, price.priceList());
                         }
                 ).verifyComplete();
+    }
+
+    @Test
+    public void testFindApplicablePrice_WithException(){
+        String mongoFailure = "Mongo failure";
+        when(mongoTemplate.findOne(any(Query.class), eq(PriceEntity.class)))
+                .thenReturn(Mono.error(new RuntimeException(mongoFailure)));
+
+        StepVerifier.create(mongoPriceRepository.findApplicablePrice(date, productId, brandId))
+                .expectErrorMatches(throwable ->
+                        throwable instanceof ProductPricingException &&
+                                throwable.getMessage().equals(mongoFailure))
+                .verify();
+    }
+
+    @Test
+    public void testFindApplicablePrice_shouldReturnError(){
+        when(mongoTemplate.findOne(any(Query.class), eq(PriceEntity.class)))
+                .thenReturn(Mono.empty());
+
+        StepVerifier.create(mongoPriceRepository.findApplicablePrice(date, productId, brandId))
+                .expectErrorMatches(throwable ->
+                        throwable instanceof ProductPricingException &&
+                                throwable.getMessage().equals("No se encontró un precio para la información suministrada"))
+                .verify();
     }
 }
