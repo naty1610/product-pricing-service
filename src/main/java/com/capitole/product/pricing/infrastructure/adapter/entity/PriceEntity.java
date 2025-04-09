@@ -19,6 +19,7 @@ public class PriceEntity {
     private Long brandId;
     private Long productId;
     private Long priceList;
+    private Long priority;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private BigDecimal price;
