@@ -44,3 +44,11 @@ docker-compose up -d
 ```bash
 ./mvnw test
 ```
+
+## Documentación OpenAPI
+### Endpoints
+
+Swagger UI: http://localhost:8080/webjars/swagger-ui/index.html
+
+OpenAPI JSON: http://localhost:8080/v3/api-docs
+
