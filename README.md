@@ -30,7 +30,6 @@ Esta aplicación fue diseñada para buscar la información del precio disponible
   - **Dominio**: lógica de negocio, modelo `Price`
   - **Infraestructura**: adaptadores para MongoDB
   - **Aplicación**: lógica de aplicación y transformaciones
-  - **Interfaces**: `Handler` y `Controller` expuestos vía WebFlux
 
 El uso de `ReactiveMongoTemplate` permite realizar consultas personalizadas con reactividad.
 
