@@ -13,10 +13,21 @@ import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
+/**
+ * Servicio que aplica las reglas de negocio para determinar el precio válido.
+ */
 public class PriceService {
 
     private final PriceRepository priceRepository;
 
+    /**
+     * Obtiene el precio aplicable para un producto y marca en una fecha dada.
+     *
+     * @param productId ID del producto
+     * @param brandId ID de la marca
+     * @param date Fecha de consulta
+     * @return Mono con el precio encontrado
+     */
     public Mono<PriceResponse> findApplicablePrice(LocalDateTime date, Long productId, Long brandId) {
         return priceRepository.findApplicablePrice(date, productId, brandId)
                 .map(price -> new PriceResponse(

@@ -22,6 +22,9 @@ import static com.capitole.product.pricing.domain.exception.DataValidationExcept
 
 @Service
 @RequiredArgsConstructor
+/**
+ * Handler del request del servicio de busqueda de precio
+ */
 public class ProductPricingHandler {
     private static final String DATE = "date";
     private static final String BRAND_ID = "brand_id";

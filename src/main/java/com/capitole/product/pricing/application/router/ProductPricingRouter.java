@@ -27,6 +27,9 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 @OpenAPIDefinition(
         info = @Info(title = "Product Pricing API", version = "1.0", description = "Consulta de precios aplicables")
 )
+/**
+ * Router del servicio Product Pricing
+ */
 public class ProductPricingRouter {
     public static final String PATH_PRODUCT_PRICING = "/v1/capitole/product/pricing/applicable";
     private final ProductPricingHandler productPricingHandler;
