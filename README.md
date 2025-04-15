@@ -30,7 +30,6 @@ Esta aplicación fue diseñada para buscar la información del precio disponible
   - **Dominio**: lógica de negocio, modelo `Price`
   - **Infraestructura**: adaptadores para MongoDB
   - **Aplicación**: lógica de aplicación y transformaciones
-  - **Interfaces**: `Handler` y `Controller` expuestos vía WebFlux
 
 El uso de `ReactiveMongoTemplate` permite realizar consultas personalizadas con reactividad.
 
@@ -45,3 +44,11 @@ docker-compose up -d
 ```bash
 ./mvnw test
 ```
+
+## Documentación OpenAPI
+### Endpoints
+
+Swagger UI: http://localhost:8080/webjars/swagger-ui/index.html
+
+OpenAPI JSON: http://localhost:8080/v3/api-docs
+

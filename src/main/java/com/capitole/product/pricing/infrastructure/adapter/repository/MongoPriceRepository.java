@@ -32,6 +32,14 @@ public class MongoPriceRepository implements PriceRepository {
     }
 
     @Override
+    /**
+     * Obtiene el precio aplicable para un producto y marca en una fecha dada.
+     *
+     * @param productId ID del producto
+     * @param brandId ID de la marca
+     * @param date Fecha de consulta
+     * @return Mono con el precio encontrado
+     */
     public Mono<Price> findApplicablePrice(LocalDateTime date, Long productId, Long brandId) {
         Query query = new Query();
         query.addCriteria(Criteria.where(PRODUCT_ID).is(productId)
