@@ -1,5 +1,6 @@
 package com.capitole.product.pricing.application.service;
 
+import com.capitole.product.pricing.domain.exception.ProductPricingException;
 import com.capitole.product.pricing.domain.repository.PriceRepository;
 import com.capitole.product.pricing.application.handler.response.PriceResponse;
 import lombok.RequiredArgsConstructor;
@@ -26,10 +27,9 @@ public class PriceService {
                         price.endDate(),
                         price.price()
                 ))
-                .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Precio no encontrado")))
                 .onErrorMap(error -> {
-                    if (ResponseStatusException.class.getName().equals(error.getClass().getName())) {
-                        return error;
+                    if (ProductPricingException.class.getName().equals(error.getClass().getName())) {
+                        return new ResponseStatusException(HttpStatus.NOT_FOUND, error.getMessage(), error);
                     }
                     return new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, error.getMessage(), error);
                 });

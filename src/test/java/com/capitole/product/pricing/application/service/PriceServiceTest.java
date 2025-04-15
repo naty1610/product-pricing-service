@@ -1,5 +1,6 @@
 package com.capitole.product.pricing.application.service;
 
+import com.capitole.product.pricing.domain.exception.NotFoundNoSQLServiceException;
 import com.capitole.product.pricing.domain.model.Price;
 import com.capitole.product.pricing.domain.repository.PriceRepository;
 import org.junit.jupiter.api.Test;
@@ -14,6 +15,7 @@ import reactor.test.StepVerifier;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import static com.capitole.product.pricing.domain.exception.NotFoundNoSQLServiceException.NOT_FOUND_DATA_CODE_ERROR;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
@@ -50,7 +52,9 @@ public class PriceServiceTest {
         Long productId = 35455L;
         Long brandId = 1L;
 
-        when(priceRepository.findApplicablePrice(date, productId, brandId)).thenReturn(Mono.empty());
+        when(priceRepository.findApplicablePrice(date, productId, brandId)).thenReturn(Mono.error(
+                new NotFoundNoSQLServiceException("No se encontró un precio para la información suministrada",
+                        NOT_FOUND_DATA_CODE_ERROR)));
 
         StepVerifier.create(priceService.findApplicablePrice(date, productId, brandId))
                 .expectError(ResponseStatusException.class)

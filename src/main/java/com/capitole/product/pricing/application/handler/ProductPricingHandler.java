@@ -1,6 +1,7 @@
 package com.capitole.product.pricing.application.handler;
 
 import com.capitole.product.pricing.domain.exception.DataValidationException;
+import com.capitole.product.pricing.domain.exception.ProductPricingException;
 import com.capitole.product.pricing.infrastructure.adapter.controller.PriceController;
 import com.capitole.product.pricing.application.handler.request.PriceParamsRequest;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
+import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
 import reactor.util.function.Tuple3;
 
@@ -76,6 +78,9 @@ public class ProductPricingHandler {
     private Mono<ServerResponse> handleError(Throwable throwable) {
         if (throwable instanceof DataValidationException) {
             return ServerResponse.badRequest().bodyValue(throwable.getMessage());
+        }
+        if (throwable instanceof ResponseStatusException) {
+            return ServerResponse.status(HttpStatus.NOT_FOUND).bodyValue(throwable.getMessage());
         }
         return ServerResponse.status(HttpStatus.INTERNAL_SERVER_ERROR).bodyValue("Internal Server Error");
     }

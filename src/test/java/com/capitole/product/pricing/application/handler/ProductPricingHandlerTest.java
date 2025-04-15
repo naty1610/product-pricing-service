@@ -8,8 +8,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
+import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
@@ -109,6 +111,27 @@ class ProductPricingHandlerTest {
 
         StepVerifier.create(response)
                 .expectNextMatches(res -> res.statusCode().is5xxServerError())
+                .verifyComplete();
+    }
+
+    @Test
+    void testHandleRequest_ControllerException() {
+        LocalDateTime date = LocalDateTime.of(2021, 6, 14, 10, 0);
+        Long productId = 35455L;
+        Long brandId = 1L;
+
+        ServerRequest request = mock(ServerRequest.class);
+        when(request.queryParam("brand_id")).thenReturn(java.util.Optional.of(Long.toString(brandId)));
+        when(request.queryParam("product_id")).thenReturn(java.util.Optional.of(Long.toString(productId)));
+        when(request.queryParam("date")).thenReturn(java.util.Optional.of(date.toString()));
+
+        when(priceController.getApplicablePrice(any(PriceParamsRequest.class)))
+                .thenReturn(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND)));
+
+        Mono<ServerResponse> response = productPricingHandler.handleRequest(request);
+
+        StepVerifier.create(response)
+                .expectNextMatches(res -> res.statusCode().is4xxClientError())
                 .verifyComplete();
     }
 

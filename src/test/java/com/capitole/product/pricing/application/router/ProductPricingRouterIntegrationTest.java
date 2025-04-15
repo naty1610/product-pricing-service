@@ -158,6 +158,20 @@ public class ProductPricingRouterIntegrationTest {
                 .jsonPath("$.endDate").isEqualTo("2020-12-31T23:59:59");
     }
 
+    @Test
+    void testProductPricing_ReturnNotFound() {
+        webTestClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path(PATH_PRODUCT_PRICING)
+                        .queryParam("date", "2021-06-16T21:00:00")
+                        .queryParam("product_id", 35455)
+                        .queryParam("brand_id", 1)
+                        .build())
+                .accept(APPLICATION_JSON)
+                .exchange()
+                .expectStatus().is4xxClientError();
+    }
+
     private static @NotNull List<PriceEntity> getPriceEntityList() {
         return List.of(
                 getPriceEntity(
